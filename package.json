@@ -16,7 +16,9 @@
   },
   "dependencies": {
     "express": "4.17.1",
+    "jimp": "^0.16.2",
     "serve-index": "^1.9.1",
-    "serve-static": "^1.14.1"
+    "serve-static": "^1.14.1",
+    "tga2png": "^0.1.3"
   }
 }
