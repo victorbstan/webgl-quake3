@@ -5,4 +5,9 @@ demo_baseq3/scripts/*
 demo_baseq3/maps/*
 demo_baseq3/music/*
 node_modules
+games/textures/*
+games/models/*
+games/scripts/*
+games/maps/*
+games/music/*
 
