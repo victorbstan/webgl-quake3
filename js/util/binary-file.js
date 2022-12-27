@@ -2,7 +2,7 @@
  * binFile.js - Binary Stream Reader
  * version 1.0
  */
- 
+
 /*
  * Copyright (c) 2011 Brandon Jones
  *
@@ -26,7 +26,7 @@
  *    distribution.
  */
 
-BinaryFile = function(data) {
+BinaryFile = function (data) {
     this.buffer = data;
     this.length = data.length;
     this.offset = 0;
@@ -51,113 +51,113 @@ var bf_wuia = new Uint32Array(bf_byteBuff);
 
 var bf_wfa = new Float32Array(bf_byteBuff);
 
-BinaryFile.prototype.eof = function() {
+BinaryFile.prototype.eof = function () {
     this.offset >= this.length;
 }
 
 // Seek to the given byt offset within the stream
-BinaryFile.prototype.seek = function(offest) {
+BinaryFile.prototype.seek = function (offest) {
     this.offset = offest;
 };
 
 // Seek to the given byt offset within the stream
-BinaryFile.prototype.tell = function() {
+BinaryFile.prototype.tell = function () {
     return this.offset;
 };
 
 // Read a signed byte from the stream
-BinaryFile.prototype.readByte = function() {
+BinaryFile.prototype.readByte = function () {
     var b0 = this.buffer.charCodeAt(this.offset) & 0xff;
     this.offset += 1;
     return b0 - (b0 & 0x80);
 };
 
 // Read an unsigned byte from the stream
-BinaryFile.prototype.readUByte = function() {
+BinaryFile.prototype.readUByte = function () {
     var b0 = this.buffer.charCodeAt(this.offset) & 0xff;
     this.offset += 1;
     return b0;
 };
 
 // Read a signed short (2 bytes) from the stream
-BinaryFile.prototype.readShort = function() {
+BinaryFile.prototype.readShort = function () {
     var off = this.offset;
     var buf = this.buffer;
     bf_wuba[0] = buf.charCodeAt(off) & 0xff;
-    bf_wuba[1] = buf.charCodeAt(off+1) & 0xff;
+    bf_wuba[1] = buf.charCodeAt(off + 1) & 0xff;
     this.offset += 2;
     return bf_wsa[0];
 };
 
 // Read an unsigned short (2 bytes) from the stream
-BinaryFile.prototype.readUShort = function() {
+BinaryFile.prototype.readUShort = function () {
     var off = this.offset;
     var buf = this.buffer;
     bf_wuba[0] = buf.charCodeAt(off) & 0xff;
-    bf_wuba[1] = buf.charCodeAt(off+1) & 0xff;
+    bf_wuba[1] = buf.charCodeAt(off + 1) & 0xff;
     this.offset += 2;
     return bf_wusa[0];
 };
 
 // Read a signed long (4 bytes) from the stream
-BinaryFile.prototype.readLong = function() {
+BinaryFile.prototype.readLong = function () {
     var off = this.offset;
     var buf = this.buffer;
     bf_wuba[0] = buf.charCodeAt(off) & 0xff;
-    bf_wuba[1] = buf.charCodeAt(off+1) & 0xff;
-    bf_wuba[2] = buf.charCodeAt(off+2) & 0xff;
-    bf_wuba[3] = buf.charCodeAt(off+3) & 0xff;
+    bf_wuba[1] = buf.charCodeAt(off + 1) & 0xff;
+    bf_wuba[2] = buf.charCodeAt(off + 2) & 0xff;
+    bf_wuba[3] = buf.charCodeAt(off + 3) & 0xff;
     this.offset += 4;
     return bf_wia[0];
 };
 
 // Read an unsigned long (4 bytes) from the stream
-BinaryFile.prototype.readULong = function() {
+BinaryFile.prototype.readULong = function () {
     var off = this.offset;
     var buf = this.buffer;
     bf_wuba[0] = buf.charCodeAt(off) & 0xff;
-    bf_wuba[1] = buf.charCodeAt(off+1) & 0xff;
-    bf_wuba[2] = buf.charCodeAt(off+2) & 0xff;
-    bf_wuba[3] = buf.charCodeAt(off+3) & 0xff;
+    bf_wuba[1] = buf.charCodeAt(off + 1) & 0xff;
+    bf_wuba[2] = buf.charCodeAt(off + 2) & 0xff;
+    bf_wuba[3] = buf.charCodeAt(off + 3) & 0xff;
     this.offset += 4;
     return bf_wuia[0];
 };
 
 // Read a float (4 bytes) from the stream
-BinaryFile.prototype.readFloat = function() {
+BinaryFile.prototype.readFloat = function () {
     var off = this.offset;
     var buf = this.buffer;
     bf_wuba[0] = buf.charCodeAt(off) & 0xff;
-    bf_wuba[1] = buf.charCodeAt(off+1) & 0xff;
-    bf_wuba[2] = buf.charCodeAt(off+2) & 0xff;
-    bf_wuba[3] = buf.charCodeAt(off+3) & 0xff;
+    bf_wuba[1] = buf.charCodeAt(off + 1) & 0xff;
+    bf_wuba[2] = buf.charCodeAt(off + 2) & 0xff;
+    bf_wuba[3] = buf.charCodeAt(off + 3) & 0xff;
     this.offset += 4;
     return bf_wfa[0];
 };
 
-BinaryFile.prototype.expandHalf = function(h) {
+BinaryFile.prototype.expandHalf = function (h) {
     var s = (h & 0x8000) >> 15;
     var e = (h & 0x7C00) >> 10;
     var f = h & 0x03FF;
-    
-    if(e == 0) {
-        return (s?-1:1) * Math.pow(2,-14) * (f/Math.pow(2, 10));
+
+    if (e == 0) {
+        return (s ? -1 : 1) * Math.pow(2, -14) * (f / Math.pow(2, 10));
     } else if (e == 0x1F) {
-        return f?NaN:((s?-1:1)*Infinity);
+        return f ? NaN : ((s ? -1 : 1) * Infinity);
     }
-    
-    return (s?-1:1) * Math.pow(2, e-15) * (1+(f/Math.pow(2, 10)));
+
+    return (s ? -1 : 1) * Math.pow(2, e - 15) * (1 + (f / Math.pow(2, 10)));
 };
 
-BinaryFile.prototype.readHalf = function() {
+BinaryFile.prototype.readHalf = function () {
     var h = this.readUShort();
     return this.expandHalf(h);
 }
 
 // Read an ASCII string of the given length from the stream
-BinaryFile.prototype.readString = function(length) {
-    var str = this.buffer.substr(this.offset, length).replace(/\0+$/,'');
+BinaryFile.prototype.readString = function (length) {
+    var str = this.buffer.substr(this.offset, length).replace(/\0+$/, '');
     this.offset += length;
     return str;
 };
-    
+

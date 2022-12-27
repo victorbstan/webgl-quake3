@@ -27,7 +27,7 @@
  *    distribution.
  */
 
-(function(global) {
+(function (global) {
     "use strict";
 
     var elementPrototype = (global.HTMLElement || global.Element)["prototype"];
@@ -44,16 +44,16 @@
     // Fullscreen
     //=====================
 
-    if(!("fullscreenElement" in document)) {
-        getter = (function() {
+    if (!("fullscreenElement" in document)) {
+        getter = (function () {
             // These are the functions that match the spec, and should be preferred
-            if("webkitFullscreenElement" in document) {
-                return function() { return document.webkitFullscreenElement; };
+            if ("webkitFullscreenElement" in document) {
+                return function () { return document.webkitFullscreenElement; };
             }
-            if("mozFullScreenElement" in document) {
-                return function() { return document.mozFullScreenElement; };
+            if ("mozFullScreenElement" in document) {
+                return function () { return document.mozFullScreenElement; };
             }
-            return function() { return null; }; // not supported
+            return function () { return null; }; // not supported
         })();
 
         Object.defineProperty(document, "fullscreenElement", {
@@ -83,32 +83,32 @@
     document.addEventListener("mozfullscreenerror", fullscreenerror, false);
 
     // element.requestFullScreen
-    if(!("requestFullScreen" in elementPrototype)) {
-        elementPrototype.requestFullScreen = (function() {
-            if("webkitRequestFullScreen" in elementPrototype) {
+    if (!("requestFullScreen" in elementPrototype)) {
+        elementPrototype.requestFullScreen = (function () {
+            if ("webkitRequestFullScreen" in elementPrototype) {
                 return elementPrototype.webkitRequestFullScreen;
             }
 
-            if("mozRequestFullScreen" in elementPrototype) {
+            if ("mozRequestFullScreen" in elementPrototype) {
                 return elementPrototype.mozRequestFullScreen;
             }
 
-            return function(){ /* unsupported, fail silently */ };
+            return function () { /* unsupported, fail silently */ };
         })();
     }
 
     // document.exitFullScreen
-    if(!("exitFullScreen" in document)) {
-        document.exitFullScreen = (function() {
-            if("webkitExitFullScreen" in document) {
+    if (!("exitFullScreen" in document)) {
+        document.exitFullScreen = (function () {
+            if ("webkitExitFullScreen" in document) {
                 return document.webkitExitFullScreen;
             }
 
-            if("mozExitFullScreen" in document) {
+            if ("mozExitFullScreen" in document) {
                 return document.mozExitFullScreen;
             }
 
-            return function(){ /* unsupported, fail silently */ };
+            return function () { /* unsupported, fail silently */ };
         })();
     }
 
@@ -118,23 +118,23 @@
 
     var mouseEventPrototype = global.MouseEvent.prototype;
 
-    if(!("movementX" in mouseEventPrototype)) {
+    if (!("movementX" in mouseEventPrototype)) {
         Object.defineProperty(mouseEventPrototype, "movementX", {
             enumerable: true, configurable: false, writeable: false,
-            get: function() { return this.webkitMovementX || this.mozMovementX || 0; }
+            get: function () { return this.webkitMovementX || this.mozMovementX || 0; }
         });
     }
 
-    if(!("movementY" in mouseEventPrototype)) {
+    if (!("movementY" in mouseEventPrototype)) {
         Object.defineProperty(mouseEventPrototype, "movementY", {
             enumerable: true, configurable: false, writeable: false,
-            get: function() { return this.webkitMovementY || this.mozMovementY || 0; }
+            get: function () { return this.webkitMovementY || this.mozMovementY || 0; }
         });
     }
 
     // Navigator pointer is not the right interface according to spec.
     // Here for backwards compatibility only
-    if(!navigator.pointer) {
+    if (!navigator.pointer) {
         navigator.pointer = navigator.webkitPointer || navigator.mozPointer;
     }
 
@@ -159,18 +159,18 @@
     document.addEventListener("mozpointerlockerror", pointerlockerror, false);
 
     // document.pointerLockEnabled
-    if(!("pointerLockEnabled" in document)) {
-        getter = (function() {
+    if (!("pointerLockEnabled" in document)) {
+        getter = (function () {
             // These are the functions that match the spec, and should be preferred
-            if("webkitPointerLockEnabled" in document) {
-                return function() { return document.webkitPointerLockEnabled; };
+            if ("webkitPointerLockEnabled" in document) {
+                return function () { return document.webkitPointerLockEnabled; };
             }
-            if("mozPointerLockEnabled" in document) {
-                return function() { return document.mozPointerLockEnabled; };
+            if ("mozPointerLockEnabled" in document) {
+                return function () { return document.mozPointerLockEnabled; };
             }
 
             GameShim.supports.pointerLock = false;
-            return function() { return false; }; // not supported, never locked
+            return function () { return false; }; // not supported, never locked
         })();
 
         Object.defineProperty(document, "pointerLockEnabled", {
@@ -179,17 +179,17 @@
         });
     }
 
-    if(!("pointerLockElement" in document)) {
-        getter = (function() {
+    if (!("pointerLockElement" in document)) {
+        getter = (function () {
             // These are the functions that match the spec, and should be preferred
-            if("webkitPointerLockElement" in document) {
-                return function() { return document.webkitPointerLockElement; };
+            if ("webkitPointerLockElement" in document) {
+                return function () { return document.webkitPointerLockElement; };
             }
-            if("mozPointerLockElement" in document) {
-                return function() { return document.mozPointerLockElement; };
+            if ("mozPointerLockElement" in document) {
+                return function () { return document.mozPointerLockElement; };
             }
 
-            return function() { return null; }; // not supported
+            return function () { return null; }; // not supported
         })();
 
         Object.defineProperty(document, "pointerLockElement", {
@@ -199,33 +199,33 @@
     }
 
     // element.requestPointerLock
-    if(!("requestPointerLock" in elementPrototype)) {
-        elementPrototype.requestPointerLock = (function() {
-            if("webkitRequestPointerLock" in elementPrototype) {
+    if (!("requestPointerLock" in elementPrototype)) {
+        elementPrototype.requestPointerLock = (function () {
+            if ("webkitRequestPointerLock" in elementPrototype) {
                 return elementPrototype.webkitRequestPointerLock;
             }
 
-            if("mozRequestPointerLock" in elementPrototype) {
+            if ("mozRequestPointerLock" in elementPrototype) {
                 return elementPrototype.mozRequestPointerLock;
             }
 
-            return function() { /* unsupported, fail silently */ };
+            return function () { /* unsupported, fail silently */ };
         })();
     }
 
     // document.exitPointerLock
-    if(!("exitPointerLock" in document)) {
-        document.exitPointerLock = (function() {
-            if("webkitExitPointerLock" in elementPrototype) {
+    if (!("exitPointerLock" in document)) {
+        document.exitPointerLock = (function () {
+            if ("webkitExitPointerLock" in elementPrototype) {
                 return document.webkitExitPointerLock;
             }
 
-            if("mozExitPointerLock" in elementPrototype) {
+            if ("mozExitPointerLock" in elementPrototype) {
                 return document.mozExitPointerLock;
             }
 
-            return function() { /* unsupported, fail silently */ };
+            return function () { /* unsupported, fail silently */ };
         })();
     }
 
-})((typeof(exports) != 'undefined') ? global : window); // Account for CommonJS environments
+})((typeof (exports) != 'undefined') ? global : window); // Account for CommonJS environments
