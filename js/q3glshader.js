@@ -96,16 +96,16 @@ q3glshader.defaultProgram = null;
 
 q3glshader.s3tcExt = null;
 
-q3glshader.init = function(gl, lightmap) {
+q3glshader.init = function (gl, lightmap) {
     q3glshader.lightmap = lightmap;
-    q3glshader.white = q3glshader.createSolidTexture(gl, [255,255,255,255]);
+    q3glshader.white = q3glshader.createSolidTexture(gl, [255, 255, 255, 255]);
 
     q3glshader.defaultProgram = q3glshader.compileShaderProgram(gl, q3bsp_default_vertex, q3bsp_default_fragment);
     q3glshader.modelProgram = q3glshader.compileShaderProgram(gl, q3bsp_default_vertex, q3bsp_model_fragment);
 
     var image = new Image();
     q3glshader.defaultTexture = gl.createTexture();
-    image.onload = function() {
+    image.onload = function () {
         gl.bindTexture(gl.TEXTURE_2D, q3glshader.defaultTexture);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
@@ -122,7 +122,7 @@ q3glshader.init = function(gl, lightmap) {
 // Shader building
 //
 
-q3glshader.build = function(gl, shader) {
+q3glshader.build = function (gl, shader) {
     var glShader = {
         cull: q3glshader.translateCull(gl, shader.cull),
         sort: shader.sort,
@@ -132,7 +132,7 @@ q3glshader.build = function(gl, shader) {
         stages: []
     };
 
-    for(var j = 0; j < shader.stages.length; ++j) {
+    for (var j = 0; j < shader.stages.length; ++j) {
         var stage = shader.stages[j];
         var glStage = stage;
 
@@ -147,7 +147,7 @@ q3glshader.build = function(gl, shader) {
     return glShader;
 }
 
-q3glshader.buildDefault = function(gl, surface) {
+q3glshader.buildDefault = function (gl, surface) {
     var diffuseStage = {
         map: (surface ? surface.shaderName + '.png' : null),
         isLightmap: false,
@@ -157,7 +157,7 @@ q3glshader.buildDefault = function(gl, surface) {
         depthWrite: true
     };
 
-    if(surface) {
+    if (surface) {
         q3glshader.loadTexture(gl, surface, diffuseStage);
     } else {
         diffuseStage.texture = q3glshader.defaultTexture;
@@ -167,15 +167,15 @@ q3glshader.buildDefault = function(gl, surface) {
         cull: gl.FRONT,
         blend: false,
         sort: 3,
-        stages: [ diffuseStage ]
+        stages: [diffuseStage]
     };
 
     return glShader;
 }
 
-q3glshader.translateDepthFunc = function(gl, depth) {
-    if(!depth) { return gl.LEQUAL; }
-    switch(depth.toLowerCase()) {
+q3glshader.translateDepthFunc = function (gl, depth) {
+    if (!depth) { return gl.LEQUAL; }
+    switch (depth.toLowerCase()) {
         case 'gequal': return gl.GEQUAL;
         case 'lequal': return gl.LEQUAL;
         case 'equal': return gl.EQUAL;
@@ -185,9 +185,9 @@ q3glshader.translateDepthFunc = function(gl, depth) {
     }
 };
 
-q3glshader.translateCull = function(gl, cull) {
-    if(!cull) { return gl.FRONT; }
-    switch(cull.toLowerCase()) {
+q3glshader.translateCull = function (gl, cull) {
+    if (!cull) { return gl.FRONT; }
+    switch (cull.toLowerCase()) {
         case 'disable':
         case 'none': return null;
         case 'front': return gl.BACK;
@@ -196,9 +196,9 @@ q3glshader.translateCull = function(gl, cull) {
     }
 };
 
-q3glshader.translateBlend = function(gl, blend) {
-    if(!blend) { return gl.ONE; }
-    switch(blend.toUpperCase()) {
+q3glshader.translateBlend = function (gl, blend) {
+    if (!blend) { return gl.ONE; }
+    switch (blend.toUpperCase()) {
         case 'GL_ONE': return gl.ONE;
         case 'GL_ZERO': return gl.ZERO;
         case 'GL_DST_COLOR': return gl.DST_COLOR;
@@ -215,39 +215,39 @@ q3glshader.translateBlend = function(gl, blend) {
 // Texture loading
 //
 
-q3glshader.loadShaderMaps = function(gl, surface, shader) {
-    for(var i = 0; i < shader.stages.length; ++i) {
+q3glshader.loadShaderMaps = function (gl, surface, shader) {
+    for (var i = 0; i < shader.stages.length; ++i) {
         var stage = shader.stages[i];
-        if(stage.map) {
+        if (stage.map) {
             q3glshader.loadTexture(gl, surface, stage);
         }
 
-        if(stage.shaderSrc && !stage.program) {
+        if (stage.shaderSrc && !stage.program) {
             stage.program = q3glshader.compileShaderProgram(gl, stage.shaderSrc.vertex, stage.shaderSrc.fragment);
         }
     }
 };
 
-q3glshader.loadTexture = function(gl, surface, stage) {
-    if(!stage.map) {
+q3glshader.loadTexture = function (gl, surface, stage) {
+    if (!stage.map) {
         stage.texture = q3glshader.white;
         return;
-    } else if(stage.map == '$lightmap') {
+    } else if (stage.map == '$lightmap') {
         stage.texture = (surface.geomType != 3 ? q3glshader.lightmap : q3glshader.white);
         return;
-    } else if(stage.map == '$whiteimage') {
+    } else if (stage.map == '$whiteimage') {
         stage.texture = q3glshader.white;
         return;
     }
 
     stage.texture = q3glshader.defaultTexture;
 
-    if(stage.map == 'anim') {
+    if (stage.map == 'anim') {
         stage.animTexture = [];
-        for(var i = 0; i < stage.animMaps.length; ++i) {
-            var animLoad = function(i) {
+        for (var i = 0; i < stage.animMaps.length; ++i) {
+            var animLoad = function (i) {
                 stage.animTexture[i] = q3glshader.defaultTexture;
-                q3glshader.loadTextureUrl(gl, stage, stage.animMaps[i], function(texture) {
+                q3glshader.loadTextureUrl(gl, stage, stage.animMaps[i], function (texture) {
                     stage.animTexture[i] = texture;
                 });
             };
@@ -255,7 +255,7 @@ q3glshader.loadTexture = function(gl, surface, stage) {
         }
         stage.animFrame = 0;
     } else {
-        q3glshader.loadTextureUrl(gl, stage, stage.map, function(texture) {
+        q3glshader.loadTextureUrl(gl, stage, stage.map, function (texture) {
             stage.texture = texture;
         });
     }
@@ -263,13 +263,13 @@ q3glshader.loadTexture = function(gl, surface, stage) {
 
 let basisLoader = new BasisLoader();
 
-q3glshader.loadTextureUrlBasisWorker = function(gl, stage, url, onload) {
+q3glshader.loadTextureUrlBasisWorker = function (gl, stage, url, onload) {
     // Swap out the file extension
     url = url.replace(/.png/, '.basis');
 
     basisLoader.setWebGLContext(gl);
     basisLoader.loadFromUrl(`${q3bsp_base_folder}/${url}`).then((result) => {
-        if(stage.clamp) {
+        if (stage.clamp) {
             gl.bindTexture(gl.TEXTURE_2D, result.texture);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -286,32 +286,34 @@ q3glshader.loadTextureUrlBasisWorker = function(gl, stage, url, onload) {
 }
 
 // PNG variant
-q3glshader.loadTextureUrlImg = function(gl, stage, url, onload) {
+q3glshader.loadTextureUrlImg = function (gl, stage, url, onload) {
     var image = new Image();
-    image.onload = function() {
+    image.onload = function () {
         var texture = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
-        if(stage.clamp) {
-            gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE );
-            gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE );
+        if (stage.clamp) {
+            gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
         }
         gl.generateMipmap(gl.TEXTURE_2D);
 
         onload(texture);
     }
     image.src = q3bsp_base_folder + '/' + url;
+    // console.log('loadTextureUrlImg', image.src);
 }
 
 if (window.location.search.indexOf('png') >= 0) {
     q3glshader.loadTextureUrl = q3glshader.loadTextureUrlImg;
 } else {
-    q3glshader.loadTextureUrl = q3glshader.loadTextureUrlBasisWorker;
+    q3glshader.loadTextureUrl = q3glshader.loadTextureUrlImg;
+    // q3glshader.loadTextureUrl = q3glshader.loadTextureUrlBasisWorker;
 }
 
-q3glshader.createSolidTexture = function(gl, color) {
+q3glshader.createSolidTexture = function (gl, color) {
     var data = new Uint8Array(color);
     var texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -325,11 +327,11 @@ q3glshader.createSolidTexture = function(gl, color) {
 // Render state setup
 //
 
-q3glshader.setShader = function(gl, shader) {
-    if(!shader) {
+q3glshader.setShader = function (gl, shader) {
+    if (!shader) {
         gl.enable(gl.CULL_FACE);
         gl.cullFace(gl.BACK);
-    } else if(shader.cull && !shader.sky) {
+    } else if (shader.cull && !shader.sky) {
         gl.enable(gl.CULL_FACE);
         gl.cullFace(shader.cull);
     } else {
@@ -339,23 +341,23 @@ q3glshader.setShader = function(gl, shader) {
     return true;
 }
 
-q3glshader.setShaderStage = function(gl, shader, shaderStage, time) {
+q3glshader.setShaderStage = function (gl, shader, shaderStage, time) {
     var stage = shaderStage;
-    if(!stage) {
+    if (!stage) {
         stage = q3glshader.defaultShader.stages[0];
     }
 
-    if(stage.animFreq) {
+    if (stage.animFreq) {
         // Texture animation seems like a natural place for setInterval, but that approach has proved error prone.
         // It can easily get out of sync with other effects (like rgbGen pulses and whatnot) which can give a
         // jittery or flat out wrong appearance. Doing it this way ensures all effects are synced.
-        var animFrame = Math.floor(time*stage.animFreq) % stage.animTexture.length;
+        var animFrame = Math.floor(time * stage.animFreq) % stage.animTexture.length;
         stage.texture = stage.animTexture[animFrame];
     }
 
     gl.blendFunc(stage.blendSrc, stage.blendDest);
 
-    if(stage.depthWrite && !shader.sky) {
+    if (stage.depthWrite && !shader.sky) {
         gl.depthMask(true);
     } else {
         gl.depthMask(false);
@@ -364,8 +366,8 @@ q3glshader.setShaderStage = function(gl, shader, shaderStage, time) {
     gl.depthFunc(stage.depthFunc);
 
     var program = stage.program;
-    if(!program) {
-        if(shader.model) {
+    if (!program) {
+        if (shader.model) {
             program = q3glshader.modelProgram;
         } else {
             program = q3glshader.defaultProgram;
@@ -375,19 +377,19 @@ q3glshader.setShaderStage = function(gl, shader, shaderStage, time) {
     gl.useProgram(program);
 
     var texture = stage.texture;
-    if(!texture) { texture = q3glshader.defaultTexture; }
+    if (!texture) { texture = q3glshader.defaultTexture; }
 
     gl.activeTexture(gl.TEXTURE0);
     gl.uniform1i(program.uniform.texture, 0);
     gl.bindTexture(gl.TEXTURE_2D, texture);
 
-    if(program.uniform.lightmap) {
+    if (program.uniform.lightmap) {
         gl.activeTexture(gl.TEXTURE1);
         gl.uniform1i(program.uniform.lightmap, 1);
         gl.bindTexture(gl.TEXTURE_2D, q3glshader.lightmap);
     }
 
-    if(program.uniform.time) {
+    if (program.uniform.time) {
         gl.uniform1f(program.uniform.time, time);
     }
 
@@ -398,7 +400,7 @@ q3glshader.setShaderStage = function(gl, shader, shaderStage, time) {
 // Shader program compilation
 //
 
-q3glshader.compileShaderProgram = function(gl, vertexSrc, fragmentSrc) {
+q3glshader.compileShaderProgram = function (gl, vertexSrc, fragmentSrc) {
     var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
     gl.shaderSource(fragmentShader, fragmentSrc);
     gl.compileShader(fragmentShader);
